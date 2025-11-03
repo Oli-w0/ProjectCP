@@ -1,0 +1,26 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="GameProject.MainPage"
+             BackgroundColor="Black">
+    
+    <AbsoluteLayout
+        x:Name="Game"
+        HorizontalOptions="FillAndExpand"
+        VerticalOptions="FillAndExpand">
+        
+     <BoxView x:Name="Player"
+              Color="Red"
+              WidthRequest="50"
+              HeightRequest="80"/>
+     <BoxView x:Name="Obstacle"
+              Color="Blue"
+              WidthRequest="50"
+              HeightRequest="80"/>
+     <Label x:Name="Score"
+            Text="Score: 0"
+            FontSize="24"
+            TextColor="White"
+            AbsoluteLayout.LayoutBounds="0.05, 0.05, AutoSize, AutoSize"
+            AbsoluteLayout.LayoutFlags="PositionProportional"/>
+    </AbsoluteLayout>
+</ContentPage>
