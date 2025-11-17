@@ -294,3 +294,7 @@
 /Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/GameProject.pdb
 /Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/GameProject.genruntimeconfig.cache
 /Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/ref/GameProject.dll
+/Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/GameProject.sourcelink.json
+/Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/resizetizer/r/Resources/jbr_err_pid18957.png
+/Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/resizetizer/r/Resources/obstacle_car.png
+/Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/resizetizer/r/Resources/background.png
