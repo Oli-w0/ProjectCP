@@ -1,13 +1,13 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameProject.MainPage"
-             BackgroundColor="Black">
+             >
     <Grid> 
     <AbsoluteLayout
         x:Name="Game"
         HorizontalOptions="FillAndExpand"
         VerticalOptions="FillAndExpand">
-
+        
         <!-- Background image (fill screen) -->
         <Image
             Source="background.png"
@@ -18,8 +18,8 @@
         <!-- Player -->
         <Image x:Name="Player"
                Source="jbr_err_pid18957.png"
-               WidthRequest="120"
-               HeightRequest="120"
+               WidthRequest="200"
+               HeightRequest="200"
                Aspect="AspectFit" />
 
         <!-- Score -->
