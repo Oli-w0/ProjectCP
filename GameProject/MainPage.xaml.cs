@@ -64,7 +64,6 @@ public partial class MainPage : ContentPage
         // Rect parameters: (X, Y, Width, Height)
         AbsoluteLayout.SetLayoutBounds(Player, new Rect(laneCenters[1] - 15, playerY, 30, 80));
 
-        // NOW it's safe to set up player movement (Game has valid dimensions)
         movePlayer(Player);
 
         // Start spawning obstacles every 1 second
@@ -153,7 +152,6 @@ public partial class MainPage : ContentPage
            
         }
 
-        // Obstacle has moved off screen - remove it to free memory
         if (!isGameOver)
         {
             Game.Children.Remove(obstacle);
