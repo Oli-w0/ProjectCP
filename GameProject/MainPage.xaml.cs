@@ -15,6 +15,8 @@ public partial class MainPage : ContentPage
     private double _currentx;
     
     bool isGameOver = false;
+
+    private double _distanceTravelled = 0;
     
     // Constructor: Called when the page is created
     public MainPage()
@@ -66,11 +68,20 @@ public partial class MainPage : ContentPage
         movePlayer(Player);
 
         // Start spawning obstacles every 1 second
-        Device.StartTimer(TimeSpan.FromSeconds(1), SpawnObstacle);
-    }
+        Device.StartTimer(TimeSpan.FromSeconds(0.5), SpawnObstacle);
 
-    // Timer callback: Spawns a new obstacle car in a random lane
-    // Returns true to keep the timer running
+        Device.StartTimer(TimeSpan.FromMilliseconds(16), () =>
+        {
+            if(isGameOver)
+                return false;
+
+            _distanceTravelled += 0.1;
+            ScoreLabel.Text = $"Score: {Math.Floor(_distanceTravelled)}";
+
+            return true;
+        });
+    }
+    
     bool SpawnObstacle()
     {
         // Safety check: make sure lanes have been calculated
@@ -193,7 +204,6 @@ public partial class MainPage : ContentPage
         Player.GestureRecognizers.Add(panGesture);
     }
     
-    // STEP 3 — Convert any MAUI view into a rectangle (hitbox)
     Rect GetHitbox(Image img)
     {
         // Get the current layout bounds of the image (its position + size)
@@ -202,7 +212,6 @@ public partial class MainPage : ContentPage
         // Build and return a rectangle using those values
         return new Rect(bounds.X, bounds.Y, bounds.Width, bounds.Height);
     }
-
 }
 
 //To DO
@@ -213,15 +222,9 @@ public partial class MainPage : ContentPage
 //Add game over for colliding with obstacle*
 //Add a UI*
 //Add special items*
-//Add different vehicles in a shop menu
-//Add sounds*
 //Make it more difficult the longer the user goes*
 //Fix the obstacle spawning*
-//Add custom maps()
-//Menu music()*
 //Keep score of coins and distance*
-//Make moving animations smooth*
-//Allow creation of new users
-//
+//Make moving animations smooth*  
 
 

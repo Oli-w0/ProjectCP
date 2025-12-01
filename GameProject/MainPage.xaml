@@ -1,7 +1,7 @@
 ﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="GameProject.MainPage"
-             >
+             x:Class="GameProject.MainPage">
+    
     <Grid> 
     <AbsoluteLayout
         x:Name="Game"
@@ -22,8 +22,8 @@
                HeightRequest="200"
                Aspect="AspectFit" />
 
-        <!-- Score -->
-        <Label x:Name="Score"
+        <!-- Score --> 
+        <Label x:Name="ScoreLabel"
                Text="Score: 0"
                FontSize="40"
                TextColor="White"
