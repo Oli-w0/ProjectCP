@@ -298,3 +298,5 @@
 /Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/GameProject.pdb
 /Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/GameProject.genruntimeconfig.cache
 /Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/ref/GameProject.dll
+/Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/resizetizer/r/Resources/coin.png
+/Users/olek/MauiProject/GameProject/GameProject/obj/Debug/net9.0-maccatalyst/maccatalyst-arm64/resizetizer/r/Resources/rocket.jpg

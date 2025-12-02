@@ -2,35 +2,163 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="GameProject.MainPage">
     
-    <Grid> 
-    <AbsoluteLayout
-        x:Name="Game"
-        HorizontalOptions="FillAndExpand"
-        VerticalOptions="FillAndExpand">
-        
-        <!-- Background image (fill screen) -->
-        <Image
-            Source="background.png"
-            Aspect="AspectFill"
-            AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
-            AbsoluteLayout.LayoutFlags="All" />
+    <Grid>
+        <!-- Main game area -->
+        <AbsoluteLayout
+            x:Name="Game"
+            HorizontalOptions="FillAndExpand"
+            VerticalOptions="FillAndExpand">
+            
+            <!-- Background image (fills entire screen) -->
+            <Image
+                Source="background.png"
+                Aspect="AspectFill"
+                AbsoluteLayout.LayoutBounds="0, 0, 1, 1"
+                AbsoluteLayout.LayoutFlags="All" />
 
-        <!-- Player -->
-        <Image x:Name="Player"
-               Source="jbr_err_pid18957.png"
-               WidthRequest="200"
-               HeightRequest="200"
-               Aspect="AspectFit" />
+            <!-- Player car -->
+            <Image x:Name="Player"
+                   Source="jbr_err_pid18957.png"
+                   WidthRequest="200"
+                   HeightRequest="200"
+                   Aspect="AspectFit" />
 
-        <!-- Score --> 
-        <Label x:Name="ScoreLabel"
-               Text="Score: 0"
-               FontSize="40"
-               TextColor="White"
-               AbsoluteLayout.LayoutBounds="0.05, 0.05, AutoSize, AutoSize"
-               AbsoluteLayout.LayoutFlags="PositionProportional" />
-    </AbsoluteLayout>
-        
+            <!-- Score display in top-left corner -->
+            <Label x:Name="ScoreLabel"
+                   Text="Score: 0"
+                   FontSize="40"
+                   FontAttributes="Bold"
+                   TextColor="White"
+                   AbsoluteLayout.LayoutBounds="0.05, 0.05, AutoSize, AutoSize"
+                   AbsoluteLayout.LayoutFlags="PositionProportional" />
+            
+            <!-- High score display in top-right corner -->
+            <Label x:Name="HighScoreLabel"
+                   Text="Best: 0"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   TextColor="Yellow"
+                   AbsoluteLayout.LayoutBounds="0.95, 0.05, AutoSize, AutoSize"
+                   AbsoluteLayout.LayoutFlags="PositionProportional" />
+        </AbsoluteLayout>
 
-        </Grid>
+        <!-- START SCREEN OVERLAY -->
+        <!-- Covers entire screen, centered content -->
+        <StackLayout x:Name="StartScreen"
+                     BackgroundColor="#CC000000"
+                     Padding="40"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     IsVisible="True">
+
+            <!-- Game title -->
+            <Label Text="RACING GAME" 
+                   FontSize="50"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   Margin="0,0,0,20"/>
+
+            <!-- Instructions -->
+            <Label Text="Swipe left and right to avoid cars!" 
+                   FontSize="18"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   Margin="0,0,0,40"/>
+
+            <!-- Start button -->
+            <Button Text="START GAME"
+                    x:Name="StartButton"
+                    BackgroundColor="#4CAF50"
+                    TextColor="White"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    CornerRadius="15"
+                    HorizontalOptions="Center"
+                    WidthRequest="250"
+                    HeightRequest="60"
+                    Clicked="StartGame_Clicked"/>
+
+            <!-- High score on start screen -->
+            <Label x:Name="StartScreenHighScore"
+                   Text="High Score: 0"
+                   FontSize="20"
+                   HorizontalOptions="Center"
+                   TextColor="Yellow"
+                   Margin="0,30,0,0"/>
+
+        </StackLayout>
+
+        <!-- GAME OVER SCREEN OVERLAY -->
+        <!-- Hidden by default, shows when player crashes -->
+        <StackLayout x:Name="GameOverPanel"
+                     BackgroundColor="#CC000000"
+                     Padding="40"
+                     VerticalOptions="Center"
+                     HorizontalOptions="Center"
+                     IsVisible="False">
+
+            <!-- Game over title -->
+            <Label Text="GAME OVER" 
+                   FontSize="50"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="Red"
+                   Margin="0,0,0,20"/>
+
+            <!-- Final score -->
+            <Label x:Name="FinalDistanceLabel"
+                   Text="Score: 0"
+                   FontSize="32"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="White"
+                   Margin="0,0,0,10"/>
+
+            <!-- High score notification (if new record) -->
+            <Label x:Name="NewHighScoreLabel"
+                   Text="NEW HIGH SCORE!"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   TextColor="Gold"
+                   IsVisible="False"
+                   Margin="0,0,0,20"/>
+
+            <!-- Best score -->
+            <Label x:Name="BestScoreLabel"
+                   Text="Best: 0"
+                   FontSize="20"
+                   HorizontalOptions="Center"
+                   TextColor="Yellow"
+                   Margin="0,0,0,40"/>
+
+            <!-- Restart button -->
+            <Button Text="PLAY AGAIN"
+                    x:Name="RestartButton"
+                    BackgroundColor="#2196F3"
+                    TextColor="White"
+                    FontSize="24"
+                    FontAttributes="Bold"
+                    CornerRadius="15"
+                    HorizontalOptions="Center"
+                    WidthRequest="250"
+                    HeightRequest="60"
+                    Clicked="RestartGame_Clicked"/>
+
+            <!-- Main menu button -->
+            <Button Text="MAIN MENU"
+                    x:Name="MainMenuButton"
+                    BackgroundColor="#555555"
+                    TextColor="White"
+                    FontSize="18"
+                    CornerRadius="15"
+                    HorizontalOptions="Center"
+                    WidthRequest="250"
+                    HeightRequest="50"
+                    Margin="0,10,0,0"
+                    Clicked="MainMenu_Clicked"/>
+
+        </StackLayout>
+    </Grid>
 </ContentPage>
