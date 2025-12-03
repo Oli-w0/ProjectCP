@@ -19,8 +19,8 @@
             <!-- Player car -->
             <Image x:Name="Player"
                    Source="jbr_err_pid18957.png"
-                   WidthRequest="200"
-                   HeightRequest="200"
+                   WidthRequest="180"
+                   HeightRequest="180"
                    Aspect="AspectFit" />
 
             <!-- Score display in top-left corner -->
@@ -29,7 +29,7 @@
                    FontSize="40"
                    FontAttributes="Bold"
                    TextColor="White"
-                   AbsoluteLayout.LayoutBounds="0.05, 0.05, AutoSize, AutoSize"
+                   AbsoluteLayout.LayoutBounds="0.1, 0.1, AutoSize, AutoSize"
                    AbsoluteLayout.LayoutFlags="PositionProportional" />
             
             <!-- High score display in top-right corner -->
@@ -40,6 +40,12 @@
                    TextColor="Yellow"
                    AbsoluteLayout.LayoutBounds="0.95, 0.05, AutoSize, AutoSize"
                    AbsoluteLayout.LayoutFlags="PositionProportional" />
+            
+            <Button Text="⏸️"
+                    x:Name="PauseButton"
+                    Clicked="PauseButton_Clicked"
+                    FontSize="80"
+                    BackgroundColor="Transparent"/>
         </AbsoluteLayout>
 
         <!-- START SCREEN OVERLAY -->
