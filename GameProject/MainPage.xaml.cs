@@ -2,7 +2,7 @@
 
 public partial class MainPage : ContentPage
 {
-    // Array to store the center X-coordinate of each lane (left, middle, right)
+    // Array to store the center X-coordinate of each lane (left, left-middle, right-middle, right)
     double[] laneCenters;
 
     // Random number generator for spawning obstacles in random lanes
@@ -31,8 +31,7 @@ public partial class MainPage : ContentPage
     
     private double leftRoadEdge;
     private double rightRoadEdge;
-
-
+    
     // Constructor: Called when the page is created
     public MainPage()
     {
@@ -57,28 +56,27 @@ public partial class MainPage : ContentPage
         this.SizeChanged -= OnGameSizeChanged;
 
         // Calculate lane positions based on screen width
-        double leftMargin = Game.Width * 0.16;
-        double rightMargin = Game.Width * 0.16;
-        double usableWidth = Game.Width - leftMargin - rightMargin;
-        double laneWidth = usableWidth / 3;
+        double leftMargin = Game.Width * 0.16;   // 16% space on left
+        double rightMargin = Game.Width * 0.16;  // 16% space on right
+        double usableWidth = Game.Width - leftMargin - rightMargin; // Road width
+        double laneWidth = usableWidth / 4; // Divide road into 4 lanes
 
-        double middleOffset = Game.Width * 0.08;
-        
+        // Set road boundaries for player movement
         leftRoadEdge = leftMargin;
         rightRoadEdge = Game.Width - rightMargin;
 
-        // Calculate the center X-coordinate of each lane
+        // Calculate the center X-coordinate of each of the 4 lanes
         laneCenters = new double[]
         {
-            leftMargin + laneWidth / 2,                    // Left lane center
-            leftMargin + laneWidth * 1.5 + middleOffset,   // Middle lane center
-            leftMargin + laneWidth * 1.5 - middleOffset, 
-            leftMargin + laneWidth * 2.5                   // Right lane center
+            leftMargin + laneWidth * 0.5,  // Lane 0: Left lane center
+            leftMargin + laneWidth * 1.5,  // Lane 1: Left-middle lane center
+            leftMargin + laneWidth * 2.5,  // Lane 2: Right-middle lane center
+            leftMargin + laneWidth * 3.5   // Lane 3: Right lane center
         };
 
-        // Position the player in the middle lane, near the bottom
+        // Position the player in the second lane (left-middle), near the bottom
         double playerY = Game.Height - 150;
-        AbsoluteLayout.SetLayoutBounds(Player, new Rect(laneCenters[2] + 100, playerY, 30, 80));
+        AbsoluteLayout.SetLayoutBounds(Player, new Rect(laneCenters[1] - 15, playerY, 30, 80));
 
         // Set up player movement controls
         movePlayer(Player);
@@ -93,15 +91,21 @@ public partial class MainPage : ContentPage
         // Reset game state
         isGameOver = false;
         isGameStarted = true;
+        isPaused = false;
         _distanceTravelled = 0;
         obstacleSpeed = 10;
         spawnInterval = 0.7;
         
-        //ClearObstacles();
+        // Clear any existing obstacles
+        ClearObstacles();
 
-        // Start the score counter (updates every frame)
+        // Start the score counter (updates every ~16ms for 60 FPS)
         Device.StartTimer(TimeSpan.FromMilliseconds(16), () =>
         {
+            // If paused, keep timer alive but don't update score
+            if (isPaused)
+                return true;
+
             // Stop if game is over
             if (isGameOver || !isGameStarted)
                 return false;
@@ -120,8 +124,9 @@ public partial class MainPage : ContentPage
     // Spawn a new obstacle in a random lane
     bool SpawnObstacle()
     {
-        if (isPaused || isGameOver)
-            return true;  
+        // If paused, keep timer alive but don't spawn
+        if (isPaused)
+            return true;
 
         // Safety checks
         if (laneCenters == null || isGameOver || !isGameStarted)
@@ -131,36 +136,34 @@ public partial class MainPage : ContentPage
         var obstacle = new Image
         {
             Source = "obstacle_car.png",
-            WidthRequest = 170,
-            HeightRequest = 170,
+            WidthRequest = 180,
+            HeightRequest = 180,
             Aspect = Aspect.AspectFit
         };
 
-        // Pick a random lane (0 = left, 1 = left-middle, 2 = right-middle, 3  = right)
+        // Pick a random lane from 0-3 (4 lanes total)
         int lane = random.Next(0, 4);
 
         // Calculate X position to center the car in the chosen lane
-        double x = laneCenters[lane] - 25;
+        double x = laneCenters[lane] - 25; // Offset to center the car
 
-        // Start above the screen
+        // Start above the screen (negative Y means above visible area)
         double y = -100;
 
         // Set position and size
         AbsoluteLayout.SetLayoutBounds(obstacle, new Rect(x, y, 50, 80));
 
-        // Add to game layout
+        // Add to game layout (makes it visible)
         Game.Children.Add(obstacle);
 
-        // Start moving it down
+        // Start moving it down the screen
         MoveObstacle(obstacle);
 
         // Update difficulty based on current score
         UpdateDifficulty();
 
-        // Schedule next spawn with current spawn interval
-        Device.StartTimer(TimeSpan.FromSeconds(spawnInterval), SpawnObstacle);
-        
-        return false; // Don't repeat this specific timer (we create new ones)
+        // Return true to keep this timer running
+        return true;
     }
 
     // Continuously moves an obstacle down the screen
@@ -169,10 +172,13 @@ public partial class MainPage : ContentPage
         // Keep moving while obstacle is on screen and game is running
         while (AbsoluteLayout.GetLayoutBounds(obstacle).Y < Game.Height && !isGameOver)
         {
-            while (isPaused)
+            // If paused, wait and skip this frame
+            if (isPaused)
             {
                 await Task.Delay(50);
+                continue;
             }
+
             // Get current position
             var bounds = AbsoluteLayout.GetLayoutBounds(obstacle);
 
@@ -182,10 +188,12 @@ public partial class MainPage : ContentPage
             // Update position
             AbsoluteLayout.SetLayoutBounds(obstacle, bounds);
 
-            // Check for collision with player
+            // Get hitboxes for collision detection
             var playerRect = GetHitbox(Player);
             var obstacleRect = GetHitbox(obstacle);
+            
 
+            // Check if player and obstacle are overlapping
             if (playerRect.IntersectsWith(obstacleRect))
             {
                 // Collision detected - game over!
@@ -195,7 +203,7 @@ public partial class MainPage : ContentPage
                 return;
             }
 
-            // Wait ~16ms 
+            // Wait ~16ms (approximately 60 FPS)
             await Task.Delay(16);
         }
 
@@ -215,8 +223,8 @@ public partial class MainPage : ContentPage
         // Define what happens when the user pans (drags) their finger
         panGesture.PanUpdated += (s, e) =>
         {
-            // Don't allow movement if game is over or not started
-            if (isGameOver || !isGameStarted)
+            // Don't allow movement if game is over, not started, or paused
+            if (isGameOver || !isGameStarted || isPaused)
                 return;
 
             // Check the current status of the gesture
@@ -228,15 +236,13 @@ public partial class MainPage : ContentPage
                     break;
 
                 case GestureStatus.Running:
-                    if(isPaused) return;
                     // User is dragging - move the player horizontally
-
+                    
                     // Calculate new X position based on drag distance
                     _currentx = _startx + e.TotalX;
 
-                    // Clamp X position to keep player on screen
-                    _currentx = Math.Clamp(_currentx, leftRoadEdge, rightRoadEdge /*- Player.Width*/);
-
+                    // Clamp X position to keep player within road boundaries
+                    _currentx = Math.Clamp(_currentx, leftRoadEdge, rightRoadEdge - Player.Width);
 
                     // Get current position (keep Y value unchanged)
                     var currentBounds = AbsoluteLayout.GetLayoutBounds(Player);
@@ -265,22 +271,22 @@ public partial class MainPage : ContentPage
         if (_distanceTravelled >= 1500)
         {
             obstacleSpeed = 20;
-            spawnInterval = 0.6;
+            spawnInterval = 0.3;
         }
         else if (_distanceTravelled >= 1000)
         {
             obstacleSpeed = 16;
-            spawnInterval = 0.6;
+            spawnInterval = 0.3;
         }
         else if (_distanceTravelled >= 600)
         {
             obstacleSpeed = 14;
-            spawnInterval = 0.7;
+            spawnInterval = 0.5;
         }
         else if (_distanceTravelled >= 300)
         {
             obstacleSpeed = 12;
-            spawnInterval = 0.8;
+            spawnInterval = 0.6;
         }
     }
 
@@ -289,6 +295,7 @@ public partial class MainPage : ContentPage
     {
         isGameOver = true;
         isGameStarted = false;
+        isPaused = false;
 
         // Display final score
         FinalDistanceLabel.Text = $"Score: {Math.Floor(_distanceTravelled)}";
@@ -298,7 +305,7 @@ public partial class MainPage : ContentPage
         if (isNewHighScore)
         {
             _highScore = _distanceTravelled;
-            // Save high score to device storage
+            // Save high score to device storage (persists between app launches)
             Preferences.Default.Set("HighScore", _highScore);
             NewHighScoreLabel.IsVisible = true;
         }
@@ -326,19 +333,24 @@ public partial class MainPage : ContentPage
         // Reset game state
         isGameOver = false;
         isGameStarted = true;
+        isPaused = false;
         _distanceTravelled = 0;
-        obstacleSpeed = 8;
-        spawnInterval = 1;
+        obstacleSpeed = 10;
+        spawnInterval = 0.7;
         
-        //ClearObstacles();
+        // Clear all obstacles from previous game
+        ClearObstacles();
 
-        // Reset player position
+        // Reset player position to starting lane (lane 1 = left-middle)
         double playerY = Game.Height - 150;
         AbsoluteLayout.SetLayoutBounds(Player, new Rect(laneCenters[1] - 15, playerY, 30, 80));
 
         // Restart score counter
         Device.StartTimer(TimeSpan.FromMilliseconds(16), () =>
         {
+            if (isPaused)
+                return true;
+                
             if (isGameOver || !isGameStarted)
                 return false;
 
@@ -348,7 +360,7 @@ public partial class MainPage : ContentPage
             return true;
         });
 
-        // Restart spawning
+        // Restart spawning obstacles
         Device.StartTimer(TimeSpan.FromSeconds(spawnInterval), SpawnObstacle);
     }
 
@@ -367,9 +379,10 @@ public partial class MainPage : ContentPage
         // Reset game state
         isGameOver = false;
         isGameStarted = false;
+        isPaused = false;
         _distanceTravelled = 0;
 
-        // Clear obstacles
+        // Clear all obstacles
         ClearObstacles();
 
         // Reset player position
@@ -380,15 +393,40 @@ public partial class MainPage : ContentPage
     // Remove all obstacle cars from the screen
     void ClearObstacles()
     {
-     
+        // Create a list to store obstacles to remove
+        var toRemove = new List<View>();
+
+        // Find all obstacle images
+        foreach (var child in Game.Children)
+        {
+            // Check if it's an Image and not the player
+            if (child is Image img && img != Player)
+            {
+                // Check if it's an obstacle by looking at the source
+                var source = img.Source?.ToString() ?? "";
+                if (source.Contains("obstacle"))
+                {
+                    toRemove.Add(img);
+                }
+            }
+        }
+
+        // Remove all found obstacles
+        foreach (var item in toRemove)
+        {
+            Game.Children.Remove(item);
+        }
     }
 
+    // Pause button clicked - toggle pause state
     void PauseButton_Clicked(object sender, EventArgs e)
     {
+        // Toggle pause state
         isPaused = !isPaused;
 
+        // Change button icon based on state
+        // ⏸️ = pause icon (shown when game is playing)
+        // ▶️ = play icon (shown when game is paused)
         PauseButton.Text = isPaused ? "▶️" : "⏸️";
     }
-
 }
-
